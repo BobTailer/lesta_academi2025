@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public enum GameState
 {
@@ -18,14 +20,29 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private Player _player;
     [SerializeField] private Enemy _enemy;
 
+    [SerializeField] private GameObject BattleUI;
+    [SerializeField] private GameObject RestUI;
+    [SerializeField] private GameObject WinUI;
+    [SerializeField] private GameObject LooseUI;
+    [SerializeField] private GameObject EndUI;
+
+    [SerializeField] private Enemies[] _enemies;
+
     private GameState _currentState = GameState.Rest;
     public GameState currentState => _currentState;
+
+    private int _battleCount = 0;
+    private int _maxBattles = 5;
+
+    private Weapon _weapon;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _player.OnDeath += GameStateChange;
-        _enemy.OnDeath += GameStateChange;
+        _player.OnDeath += OnPlayerDeath;
+        _enemy.OnDeath += OnEnemyDeath;
+
+        GetRandomEnemy();
     }
 
     // Update is called once per frame
@@ -51,6 +68,12 @@ public class GameManager : Singleton<GameManager>
     {
         WeaponUpgrade?.Invoke(weapon);
     }
+
+    public void EquipReward()
+    {
+        WeaponUpgrade?.Invoke(_weapon);
+    }
+
     public void OnEnemyChange(Enemies enemy)
     {
         EnemyChange?.Invoke(enemy);
@@ -61,11 +84,53 @@ public class GameManager : Singleton<GameManager>
         _currentState = _currentState == GameState.Rest ? GameState.Battle : GameState.Rest;
         if (_currentState == GameState.Battle)
         {
+            //Debug.Log("Battle Start");
+            _player.ResetHealth();
+            ActiveBattleUI();
             Battle?.Invoke();
         }
         else
         {
+            //Debug.Log("Rest Start");
             Rest?.Invoke();
         }
+    }
+
+    private void ActiveBattleUI()
+    {
+        RestUI.SetActive(false);
+        WinUI.SetActive(false);
+        LooseUI.SetActive(false);
+        BattleUI.SetActive(true);
+    }
+    private void ActiveRestUI(GameObject UI)
+    {
+        BattleUI.SetActive(false);
+        UI.SetActive(true);
+    }
+
+    private void GetRandomEnemy()
+    {
+        int index = UnityEngine.Random.Range(0, _enemies.Length);
+        EnemyChange?.Invoke(_enemies[index]);
+    }
+
+    private void OnEnemyDeath()
+    {
+        _weapon = _enemy.enemyData.reward;
+        GetRandomEnemy();
+        GameStateChange();
+        ActiveRestUI(WinUI);
+        _battleCount++;
+        if (_battleCount >= _maxBattles)
+        {
+            ActiveRestUI(EndUI);
+        }
+    }
+
+    private void OnPlayerDeath()
+    {
+        GameStateChange();
+        ActiveRestUI(LooseUI);
     }
 }

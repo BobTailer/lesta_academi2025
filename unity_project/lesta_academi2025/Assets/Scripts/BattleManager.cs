@@ -39,35 +39,39 @@ public class BattleManager : Singleton<BattleManager>
     private IEnumerator BattleRoutine()
     {
         _battleRoutineRunning = true;
+        yield return new WaitForSeconds(5f); // Пауза 5 секунда
 
         if (AttackChance())
         {
             CalculateDamage();
+            //Debug.Log($"{_currentAttacker} hits for {_damage} damage (Weapon Damage: {_weaponDamage}, Damage Type: {_damageType})");
             ApplyDamage();
-            Debug.Log($"{_currentAttacker} hits for {_damage} damage (Weapon Damage: {_weaponDamage}, Damage Type: {_damageType})");
         }
         else
         {
-            Debug.Log($"{_currentAttacker} misses!");
+            //Debug.Log($"{_currentAttacker} misses!");
         }
         // Switch turns
         _currentAttacker = _currentAttacker == Attacker.Player ? Attacker.Enemy : Attacker.Player;
         _steps++;
-
-        yield return new WaitForSeconds(1f); // Пауза 1 секунда
+        //Debug.Log($"Step {_steps} completed. Next attacker: {_currentAttacker}");
 
         _battleRoutineRunning = false;
     }
 
     private void OnBattleStart()
     {
+        _steps = 0;
+        //Debug.Log("Расчет ловкости");
         if (_player.agility >= _enemy.enemyData.agility)
         {
+            //Debug.Log("Игрок атакует первым");
             // Player attacks first
             _currentAttacker = Attacker.Player;
         }
         else
         {
+            //Debug.Log("Враг атакует первым");
             // Enemy attacks first
             _currentAttacker = Attacker.Enemy;
         }
@@ -75,14 +79,17 @@ public class BattleManager : Singleton<BattleManager>
 
     private bool AttackChance()
     {
+        //Debug.Log("Расчет шанса атаки");
         var general_agility = _player.agility + _enemy.enemyData.agility;
         var chance = Random.Range(1, general_agility + 1);
         if (_currentAttacker == Attacker.Player)
         {
+            //Debug.Log($"Шанс атаки игрока: {chance} против {_enemy.enemyData.agility} - {chance > _enemy.enemyData.agility}");
             return chance > _enemy.enemyData.agility;
         }
         else
         {
+            //Debug.Log($"Шанс атаки врага: {chance} против {_player.agility} - {chance > _player.agility}");
             return chance > _player.agility;
         }
     }
@@ -95,24 +102,28 @@ public class BattleManager : Singleton<BattleManager>
 
         if (_currentAttacker == Attacker.Player)
         {
+            //Debug.Log("Расчет урона игрока");
             weaponDamage = _player.weapon != null ? _player.weapon.atk : 0;
             damage = _player.power + weaponDamage;
             damageType = _player.weapon != null ? _player.weapon.damageType : DamageType.Chopping;
         }
         else
         {
-            weaponDamage = _enemy.weapon != null ? _enemy.weapon.atk : 0;
-            damage = _enemy.enemyData.atk + weaponDamage;
+            //Debug.Log("Расчет урона врага");
+            weaponDamage = _enemy.enemyData.atk;
+            damage = _enemy.enemyData.power + weaponDamage;
             damageType = _enemy.weapon != null ? _enemy.weapon.damageType : DamageType.Chopping;
         }
         
         _damage = damage;
         _weaponDamage = weaponDamage;
         _damageType = damageType;
+        //Debug.Log($"Урон рассчитан: {_damage} (Урон оружия: {_weaponDamage}, Тип урона: {_damageType})");
     }
 
     private void ApplyDamage()
     {
+        //Debug.Log("Применение урона");
         if (_currentAttacker == Attacker.Player)
         {
             _enemy.ApplyDamage(_damage);

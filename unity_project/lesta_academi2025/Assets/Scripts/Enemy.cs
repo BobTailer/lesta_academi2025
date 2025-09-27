@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -15,12 +16,13 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
+        GameManager.Instance.EnemyChange += OnEnemyChange;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        GameManager.Instance.EnemyChange += OnEnemyChange;
+
     }
 
     // Update is called once per frame
@@ -37,11 +39,20 @@ public class Enemy : MonoBehaviour
 
     public void ApplyDamage(int damage)
     {
+        //Debug.Log($"Enemy takes {damage} damage");
         _currentHp -= damage;
         if (_currentHp <= 0)
         {
-            OnDeath?.Invoke();
+            //Debug.Log("Enemy defeated!");
+            StartCoroutine(DeathDelayCoroutine());
         }
+        //Debug.Log($"Enemy HP: {_currentHp}/{_enemyData.hp}");
+    }
+
+    private IEnumerator DeathDelayCoroutine()
+    {
+        yield return new WaitForSeconds(3f);
+        OnDeath?.Invoke();
     }
 
     private void OnDestroy()

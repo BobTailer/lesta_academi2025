@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -34,6 +35,8 @@ public class Player : MonoBehaviour
         _power = UnityEngine.Random.Range(1, 4);
         _agility = UnityEngine.Random.Range(1, 4);
         _endurance = UnityEngine.Random.Range(1, 4);
+
+        ResetCharactersLevel();
     }
 
     // Update is called once per frame
@@ -46,7 +49,8 @@ public class Player : MonoBehaviour
     {
         character.level++;
         _maxHP += character.HpPerLevel + _endurance;
-    }
+        _currentHP = _maxHP;
+}
 
     public void OnWeaponUpgrade(Weapon weapon)
     {
@@ -55,12 +59,37 @@ public class Player : MonoBehaviour
 
     public void ApplyDamage(int damage)
     {
+        //Debug.Log($"Player takes {damage} damage");
         _currentHP -= damage;
         if (_currentHP <= 0)
         {
-            OnDeath?.Invoke();
+            _currentHP = 0;
+            ResetCharactersLevel();
+            //Debug.Log("Player defeated!");
+            StartCoroutine(DeathDelayCoroutine());
+        }
+        //Debug.Log($"Player HP: {_currentHP}/{_maxHP}");
+    }
+
+    private IEnumerator DeathDelayCoroutine()
+    {
+        yield return new WaitForSeconds(3f);
+        OnDeath?.Invoke();
+        _currentHP = _maxHP;
+    }
+
+    private void ResetCharactersLevel()
+    {
+        foreach (var character in _squad)
+        {
+            character.ResetLevel();
         }
     }
+
+    public void ResetHealth()
+    {
+        _currentHP = _maxHP;
+    } 
 
     private void OnDestroy()
     {

@@ -21,5 +21,5 @@ public class Enemies : ScriptableObject
     public int agility;
     public int endurance;
 
-    public WeaponType reward;
+    public Weapon reward;
 }

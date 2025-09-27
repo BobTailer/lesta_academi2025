@@ -18,4 +18,4 @@ MonoBehaviour:
   power: 3
   agility: 1
   endurance: 3
-  reward: 3
+  reward: {fileID: 11400000, guid: a6b95d845bc3c644190d87c7dc5ee557, type: 2}
