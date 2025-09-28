@@ -1,4 +1,6 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum CharacterType
 {
@@ -13,6 +15,11 @@ public class Characters : ScriptableObject
     public CharacterType character;
     public int HpPerLevel;
     public int level;
+
+    public Abilities[] abilities;
+
+    public string characterName;
+    public Sprite icon;
 
     public void ResetLevel()
     {

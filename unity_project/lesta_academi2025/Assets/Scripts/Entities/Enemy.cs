@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : Entity
 {
     private Enemies _enemyData;
     public Enemies enemyData => _enemyData;
@@ -10,9 +10,9 @@ public class Enemy : MonoBehaviour
     private Weapon _weapon;
     public Weapon weapon => _weapon;
 
-    private int _currentHp;
-
     public Action OnDeath;
+
+    public Action OnDeathDelayStart;
 
     private void Awake()
     {
@@ -34,19 +34,22 @@ public class Enemy : MonoBehaviour
     public void OnEnemyChange(Enemies enemyData)
     {
         _enemyData = enemyData;
-        _currentHp = _enemyData.hp;
+        _maxHP = _enemyData.hp;
+        _currentHP = _enemyData.hp;
     }
 
     public void ApplyDamage(int damage)
     {
-        //Debug.Log($"Enemy takes {damage} damage");
-        _currentHp -= damage;
-        if (_currentHp <= 0)
+        Debug.Log($"Enemy takes {damage} damage");
+        _currentHP -= damage;
+        if (_currentHP <= 0)
         {
-            //Debug.Log("Enemy defeated!");
+            _currentHP = 0;
+            Debug.Log("Enemy defeated!");
+            OnDeathDelayStart?.Invoke(); // Сообщаем о начале задержки
             StartCoroutine(DeathDelayCoroutine());
         }
-        //Debug.Log($"Enemy HP: {_currentHp}/{_enemyData.hp}");
+        Debug.Log($"Enemy HP: {_currentHP}/{_enemyData.hp}");
     }
 
     private IEnumerator DeathDelayCoroutine()
@@ -58,5 +61,6 @@ public class Enemy : MonoBehaviour
     private void OnDestroy()
     {
         OnDeath = null;
+        OnDeathDelayStart = null;
     }
 }

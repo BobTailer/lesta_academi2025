@@ -2,16 +2,15 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Entity
 {
     public Action OnDeath;
+    public Action OnDeathDelayStart;
 
     private int _power;
     private int _agility;
     private int _endurance;
 
-    private int _maxHP;
-    private int _currentHP;
 
     public int power => _power;
     public int agility => _agility;
@@ -48,7 +47,22 @@ public class Player : MonoBehaviour
     public void OnLevelUpgrade(Characters character)
     {
         character.level++;
-        _maxHP += character.HpPerLevel + _endurance;
+
+        foreach (var ability in character.abilities)
+        {
+            ability.currentLevel = character.level;
+        }
+
+        foreach (var ability in character.abilities)
+        {
+            if (ability.abilityType == AbilityType.StatBoost)
+            {
+                int dmg = 0;
+                ability.UseAbility(this, null, 0, ref dmg, ref dmg, DamageType.Chopping);
+            }
+        }
+
+            _maxHP += character.HpPerLevel + _endurance;
         _currentHP = _maxHP;
 }
 
@@ -59,16 +73,17 @@ public class Player : MonoBehaviour
 
     public void ApplyDamage(int damage)
     {
-        //Debug.Log($"Player takes {damage} damage");
+        Debug.Log($"Player takes {damage} damage");
         _currentHP -= damage;
         if (_currentHP <= 0)
         {
             _currentHP = 0;
             ResetCharactersLevel();
-            //Debug.Log("Player defeated!");
+            Debug.Log("Player defeated!");
+            OnDeathDelayStart?.Invoke(); // Сообщаем о начале задержки
             StartCoroutine(DeathDelayCoroutine());
         }
-        //Debug.Log($"Player HP: {_currentHP}/{_maxHP}");
+        Debug.Log($"Player HP: {_currentHP}/{_maxHP}");
     }
 
     private IEnumerator DeathDelayCoroutine()
@@ -83,6 +98,10 @@ public class Player : MonoBehaviour
         foreach (var character in _squad)
         {
             character.ResetLevel();
+            foreach (var ability in character.abilities)
+            {
+                ability.currentLevel = 0;
+            }
         }
     }
 
@@ -91,8 +110,16 @@ public class Player : MonoBehaviour
         _currentHP = _maxHP;
     } 
 
+    public void UpgradeStats(int power, int agility, int endurance)
+    {
+        _power += power;
+        _agility += agility;
+        _endurance += endurance;
+    }
+
     private void OnDestroy()
     {
         OnDeath = null;
+        OnDeathDelayStart = null;
     }
 }

@@ -84,14 +84,14 @@ public class GameManager : Singleton<GameManager>
         _currentState = _currentState == GameState.Rest ? GameState.Battle : GameState.Rest;
         if (_currentState == GameState.Battle)
         {
-            //Debug.Log("Battle Start");
+            Debug.Log("Battle Start");
             _player.ResetHealth();
             ActiveBattleUI();
             Battle?.Invoke();
         }
         else
         {
-            //Debug.Log("Rest Start");
+            Debug.Log("Rest Start");
             Rest?.Invoke();
         }
     }

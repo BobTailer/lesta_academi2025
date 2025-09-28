@@ -19,3 +19,4 @@ MonoBehaviour:
   agility: 1
   endurance: 2
   reward: {fileID: 11400000, guid: 4a300c72853751b46b36154672645615, type: 2}
+  ability: {fileID: 11400000, guid: a1f683633e4460d4ca894b853384a270, type: 2}

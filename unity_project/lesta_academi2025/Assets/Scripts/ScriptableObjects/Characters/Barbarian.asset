@@ -15,3 +15,9 @@ MonoBehaviour:
   character: 2
   HpPerLevel: 6
   level: 0
+  abilities:
+  - {fileID: 11400000, guid: 51692cd57c2b4fa45a5099b77d7fd97b, type: 2}
+  - {fileID: 11400000, guid: ba44d3e728687c741abd0a4b11e1e701, type: 2}
+  - {fileID: 11400000, guid: 3292ba600e8c56d45848a6268b4323db, type: 2}
+  characterName: "\u0412\u0430\u0440\u0432\u0430\u0440"
+  icon: {fileID: 6071807438270461448, guid: 796a01202c15ceb409d22833ddd91604, type: 3}

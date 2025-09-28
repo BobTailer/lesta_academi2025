@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7c0029067f79ca4a8ef0c366810cedd, type: 3}
+  m_Name: ImmuneCopping
+  m_EditorClassIdentifier: Assembly-CSharp::ImmuneCopping
+  requiredLevel: 0
+  currentLevel: 0
+  abilityType: 1
+  abilityOwner: 1
+  _player: {fileID: 4895970011399056004, guid: 3fe5c9546c5c43948a795feaa29de224, type: 3}
+  _enemy: {fileID: 5905174691160153619, guid: 9753770114a01484d9399cb29c6cfdf7, type: 3}

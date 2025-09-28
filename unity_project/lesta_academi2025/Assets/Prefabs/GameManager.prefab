@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1854476149118170073
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5821389859374812113}
+  - component: {fileID: 1278951088350107496}
+  - component: {fileID: 520279514175201795}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5821389859374812113
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854476149118170073}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1278951088350107496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854476149118170073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ea4a6f43b1f77f4589a9d36339a2d58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  _dontDestroyOnLoad: 0
+  _player: {fileID: 0}
+  _enemy: {fileID: 0}
+  BattleUI: {fileID: 0}
+  RestUI: {fileID: 0}
+  WinUI: {fileID: 0}
+  LooseUI: {fileID: 0}
+  EndUI: {fileID: 0}
+  _enemies:
+  - {fileID: 11400000, guid: 6b7d9977869a3294c9442e5c92bcbb82, type: 2}
+  - {fileID: 11400000, guid: 4ef6143a6d9f9514ea96531eb66969c5, type: 2}
+  - {fileID: 11400000, guid: 888c5ea4d2bbdb0409eb9c669951be33, type: 2}
+  - {fileID: 11400000, guid: 47e61f6f3c7125240a3dc716b8a750c6, type: 2}
+  - {fileID: 11400000, guid: c8f824536c6b64c4ba3539454559005a, type: 2}
+  - {fileID: 11400000, guid: c4c5f3ce0d81e444a987550a0424aeda, type: 2}
+--- !u!114 &520279514175201795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854476149118170073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c44008ce9ec1efa4b8b0f84f40020e6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BattleManager
+  _dontDestroyOnLoad: 0
+  _player: {fileID: 0}
+  _enemy: {fileID: 0}

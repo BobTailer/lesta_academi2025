@@ -14,3 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Characters
   character: 1
   HpPerLevel: 5
+  level: 0
+  abilities:
+  - {fileID: 11400000, guid: 965a58b4079badc4d91ee1ed68e1f439, type: 2}
+  - {fileID: 11400000, guid: 6056947377bdde841832cf85c821d713, type: 2}
+  - {fileID: 11400000, guid: 17abe7d6064f01b4388fd0040da68a71, type: 2}
+  characterName: "\u0412\u043E\u0438\u043D"
+  icon: {fileID: 3944610533857416082, guid: a5752bd8741b6ed46b35929937d932ef, type: 3}
