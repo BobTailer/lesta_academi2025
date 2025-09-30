@@ -9,13 +9,22 @@ public enum Attacker
     Enemy
 }
 
+/// <summary>
+/// Менеджер боя. Управляет логикой раундов, атак, способностей и событиями.
+/// </summary>
 public class BattleManager : Singleton<BattleManager>
 {
+    #region События
+
     public Action<Abilities, Characters, int> OnPlayerAbilityUsed;
     public Action<Abilities, Enemies, int> OnEnemyAbilityUsed;
     public Action<int, Attacker> OnHit;
     public Action<Attacker> OnMiss;
     public Action OnSwitch;
+
+    #endregion
+
+    #region Поля и свойства
 
     private Attacker _currentAttacker = Attacker.Player;
     public Attacker currentAttacker => _currentAttacker;
@@ -34,12 +43,14 @@ public class BattleManager : Singleton<BattleManager>
     private DamageType _damageType;
 
     private bool _battleRoutineRunning = false;
-
     private bool _isBattlePaused = false;
-
     private int _roundAttackCount = 0;
 
     private AudioSource _audioSource;
+
+    #endregion
+
+    #region Unity Events
 
     private void Start()
     {
@@ -60,6 +71,22 @@ public class BattleManager : Singleton<BattleManager>
         }
     }
 
+    private void OnDestroy()
+    {
+        OnPlayerAbilityUsed = null;
+        OnEnemyAbilityUsed = null;
+        OnHit = null;
+        OnMiss = null;
+        OnSwitch = null;
+    }
+
+    #endregion
+
+    #region Основная логика боя
+
+    /// <summary>
+    /// Основная корутина боя. Управляет ходом атаки, паузами, переключением атакующего.
+    /// </summary>
     private IEnumerator BattleRoutine()
     {
         _battleRoutineRunning = true;
@@ -100,6 +127,9 @@ public class BattleManager : Singleton<BattleManager>
         _battleRoutineRunning = false;
     }
 
+    /// <summary>
+    /// Инициализация боя, определение первого атакующего.
+    /// </summary>
     private void OnBattleStart()
     {
         _steps = 1;
@@ -108,17 +138,18 @@ public class BattleManager : Singleton<BattleManager>
         if (_player.agility >= _enemy.enemyData.agility)
         {
             Debug.Log("Игрок атакует первым");
-            // Player attacks first
             _currentAttacker = Attacker.Player;
         }
         else
         {
             Debug.Log("Враг атакует первым");
-            // Enemy attacks first
             _currentAttacker = Attacker.Enemy;
         }
     }
 
+    /// <summary>
+    /// Проверка шанса попадания атаки.
+    /// </summary>
     private bool AttackChance()
     {
         Debug.Log("Расчет шанса атаки");
@@ -136,6 +167,9 @@ public class BattleManager : Singleton<BattleManager>
         }
     }
 
+    /// <summary>
+    /// Расчёт урона с учётом способностей.
+    /// </summary>
     private void CalculateDamage()
     {
         _damage = 0;
@@ -151,7 +185,7 @@ public class BattleManager : Singleton<BattleManager>
 
             Debug.Log($"Базовый урон игрока: {_damage} (Урон оружия: {_weaponDamage}, Тип урона: {_damageType})");
 
-            // Применение атакующей способностей игрока
+            // Применение атакующих способностей игрока
             foreach (var character in _player.squad)
             {
                 foreach (var ability in character.abilities)
@@ -171,16 +205,13 @@ public class BattleManager : Singleton<BattleManager>
             Debug.Log($"Урон после атакующих способностей игрока: {_damage} (Урон оружия: {_weaponDamage}, Тип урона: {_damageType})");
 
             // Применение защитной способности врага
-            if (_enemy.enemyData.ability != null)
+            if (_enemy.enemyData.ability != null && _enemy.enemyData.ability.abilityType == AbilityType.Defend)
             {
-                if (_enemy.enemyData.ability.abilityType == AbilityType.Defend)
+                var dmgBefore = _damage;
+                _enemy.enemyData.ability.UseAbility(_player, _enemy, _steps, ref _damage, ref _weaponDamage, _damageType);
+                if (dmgBefore != _damage)
                 {
-                    var dmgBefore = _damage;
-                    _enemy.enemyData.ability.UseAbility(_player, _enemy, _steps, ref _damage, ref _weaponDamage, _damageType);
-                    if (dmgBefore != _damage)
-                    {
-                        OnEnemyAbilityUsed?.Invoke(_enemy.enemyData.ability, _enemy.enemyData, _damage - dmgBefore);
-                    }
+                    OnEnemyAbilityUsed?.Invoke(_enemy.enemyData.ability, _enemy.enemyData, _damage - dmgBefore);
                 }
             }
         }
@@ -191,17 +222,14 @@ public class BattleManager : Singleton<BattleManager>
             _damage = _enemy.enemyData.power + _weaponDamage;
             _damageType = _enemy.weapon != null ? _enemy.weapon.damageType : DamageType.Chopping;
 
-            // Применение способностей врага
-            if (_enemy.enemyData.ability != null)
+            // Применение атакующих способностей врага
+            if (_enemy.enemyData.ability != null && _enemy.enemyData.ability.abilityType == AbilityType.Damage)
             {
-                if (_enemy.enemyData.ability.abilityType == AbilityType.Damage)
+                var dmgBefore = _damage;
+                _enemy.enemyData.ability.UseAbility(_player, _enemy, _steps, ref _damage, ref _weaponDamage, _damageType);
+                if (dmgBefore != _damage)
                 {
-                    var dmgBefore = _damage;
-                    _enemy.enemyData.ability.UseAbility(_player, _enemy, _steps, ref _damage, ref _weaponDamage, _damageType);
-                    if (dmgBefore != _damage)
-                    {
-                        OnEnemyAbilityUsed?.Invoke(_enemy.enemyData.ability, _enemy.enemyData, _damage - dmgBefore);
-                    }
+                    OnEnemyAbilityUsed?.Invoke(_enemy.enemyData.ability, _enemy.enemyData, _damage - dmgBefore);
                 }
             }
 
@@ -225,6 +253,9 @@ public class BattleManager : Singleton<BattleManager>
         Debug.Log($"Урон рассчитан: {_damage} (Урон оружия: {_weaponDamage}, Тип урона: {_damageType})");
     }
 
+    /// <summary>
+    /// Применяет рассчитанный урон.
+    /// </summary>
     private void ApplyDamage()
     {
         Debug.Log("Применение урона");
@@ -239,10 +270,9 @@ public class BattleManager : Singleton<BattleManager>
         OnHit?.Invoke(_damage, _currentAttacker);
     }
 
-    private void OnBattleEnd()
-    {
-        // Determine winner and handle end of battle logic
-    }
+    #endregion
+
+    #region Управление паузой боя
 
     private void PauseBattle()
     {
@@ -254,12 +284,5 @@ public class BattleManager : Singleton<BattleManager>
         _isBattlePaused = false;
     }
 
-    private void OnDestroy()
-    {
-        OnPlayerAbilityUsed = null;
-        OnEnemyAbilityUsed = null;
-        OnHit = null;
-        OnMiss = null;
-        OnSwitch = null;
-    }
+    #endregion
 }

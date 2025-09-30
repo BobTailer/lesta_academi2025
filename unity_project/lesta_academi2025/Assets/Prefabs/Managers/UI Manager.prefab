@@ -1,0 +1,125 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5535610663307197156
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 224410693535777464}
+  - component: {fileID: 7527320575018791134}
+  m_Layer: 0
+  m_Name: UI Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &224410693535777464
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5535610663307197156}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 859.5861, y: 633.10724, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7527320575018791134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5535610663307197156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4608c77d63a950f47a7eed143114a370, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIManager
+  _player: {fileID: 0}
+  _enemy: {fileID: 0}
+  _banditData: {fileID: 11400000, guid: 8751fe3644313a44c9bf81879eb46582, type: 2}
+  _barbarianData: {fileID: 11400000, guid: 921d994828992fa46afba3c594e17d6e, type: 2}
+  _warriorData: {fileID: 11400000, guid: e0f8b48e54cf5184e8430aa547fa2705, type: 2}
+  _goblinData: {fileID: 11400000, guid: 888c5ea4d2bbdb0409eb9c669951be33, type: 2}
+  _skeletonData: {fileID: 11400000, guid: c8f824536c6b64c4ba3539454559005a, type: 2}
+  _slimeData: {fileID: 11400000, guid: c4c5f3ce0d81e444a987550a0424aeda, type: 2}
+  _ghostData: {fileID: 11400000, guid: 4ef6143a6d9f9514ea96531eb66969c5, type: 2}
+  _golemData: {fileID: 11400000, guid: 47e61f6f3c7125240a3dc716b8a750c6, type: 2}
+  _dragonData: {fileID: 11400000, guid: 6b7d9977869a3294c9442e5c92bcbb82, type: 2}
+  _swordData: {fileID: 11400000, guid: 8ce41d9ec48cd45478bf5234550a72ea, type: 2}
+  _axeData: {fileID: 11400000, guid: a6b95d845bc3c644190d87c7dc5ee557, type: 2}
+  _cudgelData: {fileID: 11400000, guid: 3a8c062e7959fbd449dce5438f3ba6fc, type: 2}
+  _duggerData: {fileID: 11400000, guid: 75a9c9410dc31e547a078496dc9fc7fb, type: 2}
+  _spearData: {fileID: 11400000, guid: 4a300c72853751b46b36154672645615, type: 2}
+  _legendarySwordData: {fileID: 11400000, guid: 1ec6910317828804da519bc69a15b42c, type: 2}
+  _fireBreathData: {fileID: 11400000, guid: d8c56dcbfe33c7b4988e75dc5cf5eae4, type: 2}
+  _ImpulseData: {fileID: 11400000, guid: 965a58b4079badc4d91ee1ed68e1f439, type: 2}
+  _poisonData: {fileID: 11400000, guid: f6072684d3529c748aeb09d48afbdc7c, type: 2}
+  _rageData: {fileID: 11400000, guid: 51692cd57c2b4fa45a5099b77d7fd97b, type: 2}
+  _stealthAttackData: {fileID: 11400000, guid: 99e41043e5a0a4b43865b26cbd786c6e, type: 2}
+  _stoneSkinData: {fileID: 11400000, guid: ba44d3e728687c741abd0a4b11e1e701, type: 2}
+  _shieldData: {fileID: 11400000, guid: 6056947377bdde841832cf85c821d713, type: 2}
+  _ImmuneChoppingData: {fileID: 11400000, guid: a1f683633e4460d4ca894b853384a270, type: 2}
+  _defencelessCrushingData: {fileID: 11400000, guid: 7db1d3c93afd45a4a9cf0732d38203f8, type: 2}
+  _agilityUpgradeData: {fileID: 11400000, guid: b8f234f973205c84b96e044762205bb9, type: 2}
+  _enduranceUpgradeData: {fileID: 11400000, guid: 3292ba600e8c56d45848a6268b4323db, type: 2}
+  _powerUpgradeData: {fileID: 11400000, guid: 17abe7d6064f01b4388fd0040da68a71, type: 2}
+  _characterSelectPanel: {fileID: 0}
+  _banditIcon: {fileID: 0}
+  _banditName: {fileID: 0}
+  _banditLevel: {fileID: 0}
+  _banditButton: {fileID: 0}
+  _barbarianIcon: {fileID: 0}
+  _barbarianName: {fileID: 0}
+  _barbarianLevel: {fileID: 0}
+  _barbarianButton: {fileID: 0}
+  _warriorIcon: {fileID: 0}
+  _warriorName: {fileID: 0}
+  _warriorLevel: {fileID: 0}
+  _warriorButton: {fileID: 0}
+  _characterDetailsPanel: {fileID: 0}
+  _characterDetailsIcon: {fileID: 0}
+  _characterDetailsName: {fileID: 0}
+  _characterDetailsDescription: {fileID: 0}
+  _characterDetailsWeaponPanel: {fileID: 0}
+  _characterDetailsWeaponIcon: {fileID: 0}
+  _characterDetailsWeaponName: {fileID: 0}
+  _characterDetailsWeaponDescription: {fileID: 0}
+  _enemyDetailsPanel: {fileID: 0}
+  _enemyDetailsIcon: {fileID: 0}
+  _enemyDetailsName: {fileID: 0}
+  _enemyDetailsDescription: {fileID: 0}
+  _enemyRewardPanel: {fileID: 0}
+  _enemyRewardIcon: {fileID: 0}
+  _enemyRewardName: {fileID: 0}
+  _enemyRewardDescription: {fileID: 0}
+  _nextEnemyPanel: {fileID: 0}
+  _nextEnemyIcon: {fileID: 0}
+  _nextEnemyName: {fileID: 0}
+  _rewardPanel: {fileID: 0}
+  _rewardIcon: {fileID: 0}
+  _rewardName: {fileID: 0}
+  _rewardDescription: {fileID: 0}
+  _rewardButton: {fileID: 0}
+  _weaponPanel: {fileID: 0}
+  _weaponIcon: {fileID: 0}
+  _weaponName: {fileID: 0}
+  _weaponDescription: {fileID: 0}
+  _statsPanel: {fileID: 0}
+  _weaponButton: {fileID: 0}
+  _statsText: {fileID: 0}
+  _healthText: {fileID: 0}
+  _progressText: {fileID: 0}
+  _beginButton: {fileID: 0}
+  _battlePanel: {fileID: 0}
+  _loosePanel: {fileID: 0}
+  _winPanel: {fileID: 0}

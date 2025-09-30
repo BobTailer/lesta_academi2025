@@ -1,20 +1,36 @@
 using UnityEngine;
 using UnityEngine.Audio;
 
+/// <summary>
+/// Менеджер аудио: управляет фоновыми музыкальными темами для отдыха и боя.
+/// </summary>
 public class AudioManager : MonoBehaviour
 {
+    #region Поля и ссылки
+
     [SerializeField] private AudioResource _backgroundRestMusic;
     [SerializeField] private AudioResource _backgroundBattleMusic;
 
     private AudioSource _audioSource;
 
+    #endregion
+
+    #region Unity Events
+
+    /// <summary>
+    /// Инициализация компонента AudioSource.
+    /// </summary>
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
     }
 
-    void Start()
+    /// <summary>
+    /// Подписка на события GameManager для смены музыки.
+    /// </summary>
+    private void Start()
     {
+        // Смена музыки на боевую
         GameManager.Instance.Battle += () =>
         {
             _audioSource.resource = _backgroundBattleMusic;
@@ -22,6 +38,7 @@ public class AudioManager : MonoBehaviour
             _audioSource.Play();
         };
 
+        // Смена музыки на спокойную
         GameManager.Instance.Rest += () =>
         {
             _audioSource.resource = _backgroundRestMusic;
@@ -30,8 +47,5 @@ public class AudioManager : MonoBehaviour
         };
     }
 
-    void Update()
-    {
-        
-    }
+    #endregion
 }

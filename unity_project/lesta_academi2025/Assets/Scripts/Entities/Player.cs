@@ -2,11 +2,20 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// Класс игрока, наследуется от Entity. Управляет состоянием, экипировкой, событиями и взаимодействием с персонажами.
+/// </summary>
 public class Player : Entity
 {
+    #region События
+
     public Action OnDeath;
     public Action OnLevelUp;
     public Action OnDeathDelayStart;
+
+    #endregion
+
+    #region Поля и свойства
 
     private int _power;
     private int _agility;
@@ -24,39 +33,53 @@ public class Player : Entity
 
     private AudioSource _audioSource;
 
+    #endregion
+
+    #region Unity Events
+
     private void Awake()
     {
         GameManager.Instance.LevelUpgrade += OnLevelUpgrade;
         GameManager.Instance.WeaponUpgrade += OnWeaponUpgrade;
 
+        // Инициализация базовых характеристик
         _power = UnityEngine.Random.Range(1, 4);
         _agility = UnityEngine.Random.Range(1, 4);
         _endurance = UnityEngine.Random.Range(1, 4);
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         ResetCharactersLevel();
-
         _audioSource = GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDestroy()
     {
-
+        ResetCharactersLevel();
+        OnDeath = null;
+        OnDeathDelayStart = null;
+        OnLevelUp = null;
     }
 
+    #endregion
+
+    #region Основные методы
+
+    /// <summary>
+    /// Обработка повышения уровня персонажа.
+    /// </summary>
     public void OnLevelUpgrade(Characters character)
     {
         character.level++;
 
+        // Обновление уровня способностей
         foreach (var ability in character.abilities)
         {
             ability.currentLevel = character.level;
         }
 
+        // Применение статовых способностей
         foreach (var ability in character.abilities)
         {
             if (ability.abilityType == AbilityType.StatBoost)
@@ -66,6 +89,7 @@ public class Player : Entity
             }
         }
 
+        // Пересчёт максимального здоровья
         _maxHP = 0;
         foreach (var chara in _squad)
         {
@@ -75,11 +99,17 @@ public class Player : Entity
         OnLevelUp?.Invoke();
     }
 
+    /// <summary>
+    /// Обработка улучшения оружия.
+    /// </summary>
     public void OnWeaponUpgrade(Weapon weapon)
     {
         _weapon = weapon;
     }
 
+    /// <summary>
+    /// Применяет урон игроку.
+    /// </summary>
     public void ApplyDamage(int damage)
     {
         Debug.Log($"Player takes {damage} damage");
@@ -89,13 +119,16 @@ public class Player : Entity
             _currentHP = 0;
             ResetCharactersLevel();
             Debug.Log("Player defeated!");
-            _audioSource.Play();
+            _audioSource?.Play();
             OnDeathDelayStart?.Invoke(); // Сообщаем о начале задержки
             StartCoroutine(DeathDelayCoroutine());
         }
         Debug.Log($"Player HP: {_currentHP}/{_maxHP}");
     }
 
+    /// <summary>
+    /// Корутина задержки перед событием смерти.
+    /// </summary>
     private IEnumerator DeathDelayCoroutine()
     {
         yield return new WaitForSeconds(3f);
@@ -103,6 +136,9 @@ public class Player : Entity
         _currentHP = _maxHP;
     }
 
+    /// <summary>
+    /// Сброс уровня всех персонажей в отряде.
+    /// </summary>
     private void ResetCharactersLevel()
     {
         foreach (var character in _squad)
@@ -115,11 +151,17 @@ public class Player : Entity
         }
     }
 
+    /// <summary>
+    /// Восстанавливает здоровье игрока до максимального.
+    /// </summary>
     public void ResetHealth()
     {
         _currentHP = _maxHP;
-    } 
+    }
 
+    /// <summary>
+    /// Улучшает характеристики игрока.
+    /// </summary>
     public void UpgradeStats(int power, int agility, int endurance)
     {
         _power += power;
@@ -127,12 +169,5 @@ public class Player : Entity
         _endurance += endurance;
     }
 
-    private void OnDestroy()
-    {
-        ResetCharactersLevel();
-
-        OnDeath = null;
-        OnDeathDelayStart = null;
-        OnLevelUp = null;
-    }
+    #endregion
 }

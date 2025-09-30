@@ -9,8 +9,13 @@ public enum GameState
     Battle
 }
 
+/// <summary>
+/// Главный менеджер игры. Управляет состояниями, событиями, сменой врагов и наградами.
+/// </summary>
 public class GameManager : Singleton<GameManager>
 {
+    #region События
+
     public Action<Characters> LevelUpgrade;
     public Action<Weapon> WeaponUpgrade;
     public Action<Enemies> EnemyChange;
@@ -20,9 +25,12 @@ public class GameManager : Singleton<GameManager>
     public Action AfterPlayerDeath;
     public Action OnGameOver;
 
+    #endregion
+
+    #region Поля и свойства
+
     [SerializeField] private Player _player;
     [SerializeField] private Enemy _enemy;
-
     [SerializeField] private Enemies[] _enemies;
 
     private GameState _currentState = GameState.Rest;
@@ -30,26 +38,21 @@ public class GameManager : Singleton<GameManager>
 
     private int _battleCount = 0;
     private int _maxBattles = 5;
-
     public int battleCount => _battleCount;
     public int maxBattles => _maxBattles;
 
     private Weapon _weapon;
     public Weapon weapon => _weapon;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    #endregion
+
+    #region Unity Events
+
+    private void Start()
     {
         _player.OnDeath += OnPlayerDeath;
         _enemy.OnDeath += OnEnemyDeath;
-
         GetRandomEnemy();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private void OnDestroy()
@@ -64,27 +67,46 @@ public class GameManager : Singleton<GameManager>
         OnGameOver = null;
     }
 
+    #endregion
+
+    #region Основная логика
+
+    /// <summary>
+    /// Вызывается при апгрейде уровня персонажа.
+    /// </summary>
     public void OnLevelUpgrade(Characters character)
     {
         LevelUpgrade?.Invoke(character);
     }
 
+    /// <summary>
+    /// Вызывается при апгрейде оружия.
+    /// </summary>
     public void OnWeaponUpgrade(Weapon weapon)
     {
         if (_player.weapon == null)
             WeaponUpgrade?.Invoke(weapon);
     }
 
+    /// <summary>
+    /// Выдать награду игроку.
+    /// </summary>
     public void EquipReward()
     {
         WeaponUpgrade?.Invoke(_weapon);
     }
 
+    /// <summary>
+    /// Смена текущего врага.
+    /// </summary>
     public void OnEnemyChange(Enemies enemy)
     {
         EnemyChange?.Invoke(enemy);
     }
 
+    /// <summary>
+    /// Переключение состояния игры (Бой/Отдых).
+    /// </summary>
     public void GameStateChange()
     {
         _currentState = _currentState == GameState.Rest ? GameState.Battle : GameState.Rest;
@@ -101,12 +123,18 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    /// <summary>
+    /// Получить случайного врага из списка.
+    /// </summary>
     private void GetRandomEnemy()
     {
         int index = UnityEngine.Random.Range(0, _enemies.Length);
         EnemyChange?.Invoke(_enemies[index]);
     }
 
+    /// <summary>
+    /// Обработка смерти врага.
+    /// </summary>
     private void OnEnemyDeath()
     {
         _weapon = _enemy.enemyData.reward;
@@ -123,9 +151,14 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    /// <summary>
+    /// Обработка смерти игрока.
+    /// </summary>
     private void OnPlayerDeath()
     {
         GameStateChange();
         AfterPlayerDeath?.Invoke();
     }
+
+    #endregion
 }

@@ -3,14 +3,26 @@ using UnityEditor.Playables;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// UI-менеджер для отображения информации о ходе боя.
+/// </summary>
 public class UIBattle : MonoBehaviour
 {
+    #region Ссылки на объекты и компоненты
+
     [SerializeField] private GameObject _uiBattleParant;
     [SerializeField] private GameObject _uiBattleInfo;
 
     [SerializeField] private Player _player;
     [SerializeField] private Enemy _enemy;
 
+    #endregion
+
+    #region Unity Events
+
+    /// <summary>
+    /// Подписка на события BattleManager и обработка событий смерти.
+    /// </summary>
     private void Start()
     {
         BattleManager.Instance.OnEnemyAbilityUsed += CreateEnemyAbilityBar;
@@ -22,6 +34,13 @@ public class UIBattle : MonoBehaviour
         _enemy.OnDeath += ClearBar;
     }
 
+    #endregion
+
+    #region Основная логика UI
+
+    /// <summary>
+    /// Очищает все бары информации о ходе боя.
+    /// </summary>
     private void ClearBar()
     {
         foreach (Transform child in _uiBattleParant.transform)
@@ -30,72 +49,72 @@ public class UIBattle : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Создаёт бар информации о промахе.
+    /// </summary>
+    /// <param name="attacker">Кто промахнулся</param>
     private void CreateMissBar(Attacker attacker)
     {
-        // Создаём объект из префаба
         GameObject infoBar = Instantiate(_uiBattleInfo, _uiBattleParant.transform);
-
-        // Находим компонент Text
         Text infoText = infoBar.GetComponentInChildren<Text>();
         if (infoText != null)
         {
-            // Формируем строку: Игрок/Враг промахнулся
             string attackerName = attacker == Attacker.Player ? "Игрок" : "Враг";
             infoText.text = $"{attackerName} промахнулся!";
         }
-
         infoBar.transform.SetParent(_uiBattleParant.transform, false);
     }
 
+    /// <summary>
+    /// Создаёт бар информации о нанесённом уроне.
+    /// </summary>
+    /// <param name="damage">Величина урона</param>
+    /// <param name="attacker">Кто нанёс урон</param>
     private void CreateHitBar(int damage, Attacker attacker)
     {
-        // Создаём объект из префаба
         GameObject infoBar = Instantiate(_uiBattleInfo, _uiBattleParant.transform);
-
-        // Находим компонент Text
         Text infoText = infoBar.GetComponentInChildren<Text>();
         if (infoText != null)
         {
-            // Формируем строку: Игрок/Враг нанес урон
             string attackerName = attacker == Attacker.Player ? "Игрок" : "Враг";
             infoText.text = $"{attackerName} нанес {damage:+#;-#;0} урона";
         }
-
         infoBar.transform.SetParent(_uiBattleParant.transform, false);
     }
 
+    /// <summary>
+    /// Создаёт бар информации о применении способности игроком.
+    /// </summary>
+    /// <param name="ability">Способность</param>
+    /// <param name="characters">Персонаж</param>
+    /// <param name="damage">Величина урона</param>
     private void CreatePlayerAbilityBar(Abilities ability, Characters characters, int damage)
     {
-        // Создаём объект из префаба
         GameObject infoBar = Instantiate(_uiBattleInfo, _uiBattleParant.transform);
-
-        // Находим компонент Text
         Text infoText = infoBar.GetComponentInChildren<Text>();
         if (infoText != null)
         {
-            // Формируем строку: Имя врага: Имя способности - нанесённый урон
             infoText.text = $"{characters.characterName}: {ability.abilityName} {damage:+#;-#;0} урона";
         }
-
-        // Устанавливаем родителя (если не указан в Instantiate)
         infoBar.transform.SetParent(_uiBattleParant.transform, false);
     }
 
+    /// <summary>
+    /// Создаёт бар информации о применении способности врагом.
+    /// </summary>
+    /// <param name="ability">Способность</param>
+    /// <param name="enemy">Враг</param>
+    /// <param name="damage">Величина урона</param>
     private void CreateEnemyAbilityBar(Abilities ability, Enemies enemy, int damage)
     {
-        // Создаём объект из префаба
         GameObject infoBar = Instantiate(_uiBattleInfo, _uiBattleParant.transform);
-
-        // Находим компонент Text
         Text infoText = infoBar.GetComponentInChildren<Text>();
         if (infoText != null)
         {
-            // Формируем строку: Имя врага: Имя способности - нанесённый урон
             infoText.text = $"{enemy.enemyName}: {ability.abilityName} {damage:+#;-#;0} урона";
         }
-
-        // Устанавливаем родителя (если не указан в Instantiate)
         infoBar.transform.SetParent(_uiBattleParant.transform, false);
     }
 
+    #endregion
 }
