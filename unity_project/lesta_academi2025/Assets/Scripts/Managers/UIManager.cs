@@ -193,7 +193,7 @@ public class UIManager : MonoBehaviour
             _rewardPanel.SetActive(true);
             _rewardIcon.sprite = GameManager.Instance.weapon.icon;
             _rewardName.text = GameManager.Instance.weapon.weaponName;
-            _rewardDescription.text = $"Атка: {GameManager.Instance.weapon.atk}\nТип урона: {GameManager.Instance.weapon.damageTypeString}";
+            _rewardDescription.text = $"Атака: {GameManager.Instance.weapon.atk}\nТип урона: {GameManager.Instance.weapon.damageTypeString}";
         }
         else
         {
@@ -238,7 +238,7 @@ public class UIManager : MonoBehaviour
             _characterDetailsWeaponPanel.SetActive(true);
             _characterDetailsWeaponIcon.sprite = character.weapon.icon;
             _characterDetailsWeaponName.text = character.weapon.weaponName;
-            _characterDetailsWeaponDescription.text = $"Атка: {character.weapon.atk}\nТип урона: {character.weapon.damageTypeString}";
+            _characterDetailsWeaponDescription.text = $"Атака: {character.weapon.atk}\nТип урона: {character.weapon.damageTypeString}";
         }
 
         _characterDetailsIcon.sprite = character.icon;
@@ -311,7 +311,7 @@ public class UIManager : MonoBehaviour
             _enemyRewardPanel.SetActive(true);
             _enemyRewardIcon.sprite = enemy.reward.icon;
             _enemyRewardName.text = enemy.reward.weaponName;
-            _enemyRewardDescription.text = $"Атка: {enemy.reward.atk}\nТип урона: {enemy.reward.damageTypeString}";
+            _enemyRewardDescription.text = $"Атака: {enemy.reward.atk}\nТип урона: {enemy.reward.damageTypeString}";
         }
         else
         {
@@ -326,7 +326,7 @@ public class UIManager : MonoBehaviour
     {
         _weaponIcon.sprite = _player.weapon.icon;
         _weaponName.text = _player.weapon.weaponName;
-        _weaponDescription.text = $"Атка: {_player.weapon.atk}\nТип урона: {_player.weapon.damageTypeString}";
+        _weaponDescription.text = $"Атака: {_player.weapon.atk}\nТип урона: {_player.weapon.damageTypeString}";
     }
 
     #endregion
