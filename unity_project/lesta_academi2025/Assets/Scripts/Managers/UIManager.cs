@@ -339,19 +339,19 @@ public class UIManager : MonoBehaviour
     private void CheckButtonImteractible()
     {
         var level = _banditData.level + _barbarianData.level + _warriorData.level;
-        if (level == GameManager.Instance.battleCount)
+        if (level <= GameManager.Instance.battleCount)
         {
             _banditButton.interactable = true;
             _barbarianButton.interactable = true;
             _warriorButton.interactable = true;
         }
 
-        if (_banditData.level == 3)
+        if (level == 3)
+        {
             _banditButton.interactable = false;
-        if (_barbarianData.level == 3)
             _barbarianButton.interactable = false;
-        if (_warriorData.level == 3)
             _warriorButton.interactable = false;
+        }
 
         if (_player.weapon == GameManager.Instance.weapon)
         {
