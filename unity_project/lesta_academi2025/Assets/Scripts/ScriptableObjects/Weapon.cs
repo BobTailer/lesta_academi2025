@@ -23,4 +23,8 @@ public class Weapon : ScriptableObject
     public WeaponType weaponType;
     public DamageType damageType;
     public int atk;
+
+    public string damageTypeString;
+    public string weaponName;
+    public Sprite icon;
 }

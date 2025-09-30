@@ -15,3 +15,6 @@ MonoBehaviour:
   weaponType: 2
   damageType: 2
   atk: 2
+  damageTypeString: "\u041A\u043E\u043B\u044E\u0449\u0438\u0439"
+  weaponName: "\u041A\u0438\u043D\u0436\u0430\u043B"
+  icon: {fileID: 1035240574951868777, guid: f48e32bf6f0437f4093ad2bd43282e01, type: 3}

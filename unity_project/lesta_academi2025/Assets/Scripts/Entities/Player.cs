@@ -5,12 +5,12 @@ using UnityEngine;
 public class Player : Entity
 {
     public Action OnDeath;
+    public Action OnLevelUp;
     public Action OnDeathDelayStart;
 
     private int _power;
     private int _agility;
     private int _endurance;
-
 
     public int power => _power;
     public int agility => _agility;
@@ -22,20 +22,24 @@ public class Player : Entity
     public Characters[] squad => _squad;
     public Weapon weapon => _weapon;
 
+    private AudioSource _audioSource;
+
     private void Awake()
     {
         GameManager.Instance.LevelUpgrade += OnLevelUpgrade;
         GameManager.Instance.WeaponUpgrade += OnWeaponUpgrade;
+
+        _power = UnityEngine.Random.Range(1, 4);
+        _agility = UnityEngine.Random.Range(1, 4);
+        _endurance = UnityEngine.Random.Range(1, 4);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _power = UnityEngine.Random.Range(1, 4);
-        _agility = UnityEngine.Random.Range(1, 4);
-        _endurance = UnityEngine.Random.Range(1, 4);
-
         ResetCharactersLevel();
+
+        _audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -62,9 +66,14 @@ public class Player : Entity
             }
         }
 
-            _maxHP += character.HpPerLevel + _endurance;
+        _maxHP = 0;
+        foreach (var chara in _squad)
+        {
+            _maxHP += chara.HpPerLevel * chara.level + _endurance * chara.level;
+        }
         _currentHP = _maxHP;
-}
+        OnLevelUp?.Invoke();
+    }
 
     public void OnWeaponUpgrade(Weapon weapon)
     {
@@ -80,6 +89,7 @@ public class Player : Entity
             _currentHP = 0;
             ResetCharactersLevel();
             Debug.Log("Player defeated!");
+            _audioSource.Play();
             OnDeathDelayStart?.Invoke(); // Сообщаем о начале задержки
             StartCoroutine(DeathDelayCoroutine());
         }
@@ -119,7 +129,10 @@ public class Player : Entity
 
     private void OnDestroy()
     {
+        ResetCharactersLevel();
+
         OnDeath = null;
         OnDeathDelayStart = null;
+        OnLevelUp = null;
     }
 }

@@ -16,15 +16,12 @@ public class GameManager : Singleton<GameManager>
     public Action<Enemies> EnemyChange;
     public Action Battle;
     public Action Rest;
+    public Action AfterEnemyDeath;
+    public Action AfterPlayerDeath;
+    public Action OnGameOver;
 
     [SerializeField] private Player _player;
     [SerializeField] private Enemy _enemy;
-
-    [SerializeField] private GameObject BattleUI;
-    [SerializeField] private GameObject RestUI;
-    [SerializeField] private GameObject WinUI;
-    [SerializeField] private GameObject LooseUI;
-    [SerializeField] private GameObject EndUI;
 
     [SerializeField] private Enemies[] _enemies;
 
@@ -34,7 +31,11 @@ public class GameManager : Singleton<GameManager>
     private int _battleCount = 0;
     private int _maxBattles = 5;
 
+    public int battleCount => _battleCount;
+    public int maxBattles => _maxBattles;
+
     private Weapon _weapon;
+    public Weapon weapon => _weapon;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -58,15 +59,20 @@ public class GameManager : Singleton<GameManager>
         EnemyChange = null;
         Battle = null;
         Rest = null;
+        AfterEnemyDeath = null;
+        AfterPlayerDeath = null;
+        OnGameOver = null;
     }
 
     public void OnLevelUpgrade(Characters character)
     {
         LevelUpgrade?.Invoke(character);
     }
+
     public void OnWeaponUpgrade(Weapon weapon)
     {
-        WeaponUpgrade?.Invoke(weapon);
+        if (_player.weapon == null)
+            WeaponUpgrade?.Invoke(weapon);
     }
 
     public void EquipReward()
@@ -86,7 +92,6 @@ public class GameManager : Singleton<GameManager>
         {
             Debug.Log("Battle Start");
             _player.ResetHealth();
-            ActiveBattleUI();
             Battle?.Invoke();
         }
         else
@@ -94,19 +99,6 @@ public class GameManager : Singleton<GameManager>
             Debug.Log("Rest Start");
             Rest?.Invoke();
         }
-    }
-
-    private void ActiveBattleUI()
-    {
-        RestUI.SetActive(false);
-        WinUI.SetActive(false);
-        LooseUI.SetActive(false);
-        BattleUI.SetActive(true);
-    }
-    private void ActiveRestUI(GameObject UI)
-    {
-        BattleUI.SetActive(false);
-        UI.SetActive(true);
     }
 
     private void GetRandomEnemy()
@@ -120,17 +112,20 @@ public class GameManager : Singleton<GameManager>
         _weapon = _enemy.enemyData.reward;
         GetRandomEnemy();
         GameStateChange();
-        ActiveRestUI(WinUI);
         _battleCount++;
         if (_battleCount >= _maxBattles)
         {
-            ActiveRestUI(EndUI);
+            OnGameOver?.Invoke();
+        }
+        else
+        {
+            AfterEnemyDeath?.Invoke();
         }
     }
 
     private void OnPlayerDeath()
     {
         GameStateChange();
-        ActiveRestUI(LooseUI);
+        AfterPlayerDeath?.Invoke();
     }
 }

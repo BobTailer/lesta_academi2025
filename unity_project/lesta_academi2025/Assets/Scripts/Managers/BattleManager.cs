@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public enum Attacker
 {
@@ -9,10 +11,20 @@ public enum Attacker
 
 public class BattleManager : Singleton<BattleManager>
 {
+    public Action<Abilities, Characters, int> OnPlayerAbilityUsed;
+    public Action<Abilities, Enemies, int> OnEnemyAbilityUsed;
+    public Action<int, Attacker> OnHit;
+    public Action<Attacker> OnMiss;
+    public Action OnSwitch;
+
     private Attacker _currentAttacker = Attacker.Player;
+    public Attacker currentAttacker => _currentAttacker;
 
     private int _steps;
     public int steps => _steps;
+
+    [SerializeField] private AudioResource _attackSound;
+    [SerializeField] private AudioResource _missSource;
 
     [SerializeField] private Player _player;
     [SerializeField] private Enemy _enemy;
@@ -27,6 +39,8 @@ public class BattleManager : Singleton<BattleManager>
 
     private int _roundAttackCount = 0;
 
+    private AudioSource _audioSource;
+
     private void Start()
     {
         GameManager.Instance.Battle += OnBattleStart;
@@ -34,6 +48,8 @@ public class BattleManager : Singleton<BattleManager>
         _enemy.OnDeathDelayStart += PauseBattle;
         _player.OnDeath += ResumeBattle;
         _enemy.OnDeath += ResumeBattle;
+
+        _audioSource = GetComponent<AudioSource>();
     }
 
     private void FixedUpdate()
@@ -47,21 +63,28 @@ public class BattleManager : Singleton<BattleManager>
     private IEnumerator BattleRoutine()
     {
         _battleRoutineRunning = true;
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(2f);
 
         if (AttackChance())
         {
             CalculateDamage();
             Debug.Log($"{_currentAttacker} hits for {_damage} damage (Weapon Damage: {_weaponDamage}, Damage Type: {_damageType})");
             ApplyDamage();
+            _audioSource.resource = _attackSound;
+            _audioSource.Play();
         }
         else
         {
             Debug.Log($"{_currentAttacker} misses!");
+            OnMiss?.Invoke(_currentAttacker);
+            _audioSource.resource = _missSource;
+            _audioSource.Play();
         }
 
+        yield return new WaitForSeconds(5f);
         // Переключаем атакующего
         _currentAttacker = _currentAttacker == Attacker.Player ? Attacker.Enemy : Attacker.Player;
+        OnSwitch?.Invoke();
 
         // Увеличиваем счётчик атак в круге
         _roundAttackCount++;
@@ -100,7 +123,7 @@ public class BattleManager : Singleton<BattleManager>
     {
         Debug.Log("Расчет шанса атаки");
         var general_agility = _player.agility + _enemy.enemyData.agility;
-        var chance = Random.Range(1, general_agility + 1);
+        var chance = UnityEngine.Random.Range(1, general_agility + 1);
         if (_currentAttacker == Attacker.Player)
         {
             Debug.Log($"Шанс атаки игрока: {chance} против {_enemy.enemyData.agility} - {chance > _enemy.enemyData.agility}");
@@ -135,7 +158,12 @@ public class BattleManager : Singleton<BattleManager>
                 {
                     if (ability.abilityType == AbilityType.Damage)
                     {
+                        var dmgBefore = _damage;
                         ability.UseAbility(_player, _enemy, _steps, ref _damage, ref _weaponDamage, _damageType);
+                        if (dmgBefore != _damage)
+                        {
+                            OnPlayerAbilityUsed?.Invoke(ability, character, _damage - dmgBefore);
+                        }
                     }
                 }
             }
@@ -143,9 +171,17 @@ public class BattleManager : Singleton<BattleManager>
             Debug.Log($"Урон после атакующих способностей игрока: {_damage} (Урон оружия: {_weaponDamage}, Тип урона: {_damageType})");
 
             // Применение защитной способности врага
-            if (_enemy.enemyData.ability.abilityType == AbilityType.Defend)
+            if (_enemy.enemyData.ability != null)
             {
-                _enemy.enemyData.ability.UseAbility(_player, _enemy, _steps, ref _damage, ref _weaponDamage, _damageType);
+                if (_enemy.enemyData.ability.abilityType == AbilityType.Defend)
+                {
+                    var dmgBefore = _damage;
+                    _enemy.enemyData.ability.UseAbility(_player, _enemy, _steps, ref _damage, ref _weaponDamage, _damageType);
+                    if (dmgBefore != _damage)
+                    {
+                        OnEnemyAbilityUsed?.Invoke(_enemy.enemyData.ability, _enemy.enemyData, _damage - dmgBefore);
+                    }
+                }
             }
         }
         else
@@ -156,9 +192,17 @@ public class BattleManager : Singleton<BattleManager>
             _damageType = _enemy.weapon != null ? _enemy.weapon.damageType : DamageType.Chopping;
 
             // Применение способностей врага
-            if (_enemy.enemyData.ability.abilityType == AbilityType.Damage)
+            if (_enemy.enemyData.ability != null)
             {
-                _enemy.enemyData.ability.UseAbility(_player, _enemy, _steps, ref _damage, ref _weaponDamage, _damageType);
+                if (_enemy.enemyData.ability.abilityType == AbilityType.Damage)
+                {
+                    var dmgBefore = _damage;
+                    _enemy.enemyData.ability.UseAbility(_player, _enemy, _steps, ref _damage, ref _weaponDamage, _damageType);
+                    if (dmgBefore != _damage)
+                    {
+                        OnEnemyAbilityUsed?.Invoke(_enemy.enemyData.ability, _enemy.enemyData, _damage - dmgBefore);
+                    }
+                }
             }
 
             // Применение защитных способностей игрока
@@ -168,7 +212,12 @@ public class BattleManager : Singleton<BattleManager>
                 {
                     if (ability.abilityType == AbilityType.Defend)
                     {
+                        var dmgBefore = _damage;
                         ability.UseAbility(_player, _enemy, _steps, ref _damage, ref _weaponDamage, _damageType);
+                        if (dmgBefore != _damage)
+                        {
+                            OnPlayerAbilityUsed?.Invoke(ability, character, _damage - dmgBefore);
+                        }
                     }
                 }
             }
@@ -187,6 +236,7 @@ public class BattleManager : Singleton<BattleManager>
         {
             _player.ApplyDamage(_damage);
         }
+        OnHit?.Invoke(_damage, _currentAttacker);
     }
 
     private void OnBattleEnd()
@@ -202,5 +252,14 @@ public class BattleManager : Singleton<BattleManager>
     private void ResumeBattle()
     {
         _isBattlePaused = false;
+    }
+
+    private void OnDestroy()
+    {
+        OnPlayerAbilityUsed = null;
+        OnEnemyAbilityUsed = null;
+        OnHit = null;
+        OnMiss = null;
+        OnSwitch = null;
     }
 }

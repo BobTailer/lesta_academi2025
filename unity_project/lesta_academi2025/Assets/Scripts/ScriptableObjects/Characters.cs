@@ -13,6 +13,7 @@ public enum CharacterType
 public class Characters : ScriptableObject
 {
     public CharacterType character;
+    public Weapon weapon;
     public int HpPerLevel;
     public int level;
 

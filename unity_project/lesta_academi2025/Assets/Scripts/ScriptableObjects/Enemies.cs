@@ -21,6 +21,7 @@ public class Enemies : ScriptableObject
     public int agility;
     public int endurance;
 
+    public Sprite icon;
     public string enemyName;
 
     public Weapon reward;

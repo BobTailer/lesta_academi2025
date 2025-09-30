@@ -45,4 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneManager
   _dontDestroyOnLoad: 1
-  _gameSceneName: SampleScene
+  _gameSceneName: Game
+  _mainMenuSceneName: MainMenu

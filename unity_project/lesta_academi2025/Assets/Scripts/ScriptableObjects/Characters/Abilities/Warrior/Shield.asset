@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Shield
   requiredLevel: 2
   currentLevel: 0
-  abilityType: 0
+  abilityType: 1
   abilityOwner: 0
   abilityName: "\u0429\u0438\u0442"
   abilityDescription: "-3 \u043A \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u043C\u043E\u043C\u0443

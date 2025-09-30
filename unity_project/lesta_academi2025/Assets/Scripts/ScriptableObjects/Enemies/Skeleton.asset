@@ -18,5 +18,7 @@ MonoBehaviour:
   power: 2
   agility: 2
   endurance: 1
+  icon: {fileID: 5809030516613042957, guid: e5c1e65c4a74bb64abf7f6bc9dc3ccb5, type: 3}
+  enemyName: "\u0421\u043A\u0435\u043B\u0435\u0442"
   reward: {fileID: 11400000, guid: 3a8c062e7959fbd449dce5438f3ba6fc, type: 2}
   ability: {fileID: 11400000, guid: 7db1d3c93afd45a4a9cf0732d38203f8, type: 2}

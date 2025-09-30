@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Warrior
   m_EditorClassIdentifier: Assembly-CSharp::Characters
   character: 1
+  weapon: {fileID: 11400000, guid: 8ce41d9ec48cd45478bf5234550a72ea, type: 2}
   HpPerLevel: 5
   level: 0
   abilities:

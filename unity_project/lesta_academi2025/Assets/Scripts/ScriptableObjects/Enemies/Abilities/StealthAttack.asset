@@ -16,5 +16,7 @@ MonoBehaviour:
   currentLevel: 0
   abilityType: 0
   abilityOwner: 1
-  _player: {fileID: 4895970011399056004, guid: 3fe5c9546c5c43948a795feaa29de224, type: 3}
-  _enemy: {fileID: 5905174691160153619, guid: 9753770114a01484d9399cb29c6cfdf7, type: 3}
+  abilityName: "\u0421\u043A\u0440\u044B\u0442\u0430\u044F \u0430\u0442\u0430\u043A\u0430"
+  abilityDescription: "+1 \u043A \u0443\u0440\u043E\u043D\u0443 \u0435\u0441\u043B\u0438
+    \u043B\u043E\u0432\u043A\u043E\u0441\u0442\u044C \u043F\u0435\u0440\u0441\u043E\u043D\u0430\u0436\u0430
+    \u0432\u044B\u0448\u0435 \u043B\u043E\u0432\u043A\u043E\u0441\u0442\u0438 \u0446\u0435\u043B\u0438"

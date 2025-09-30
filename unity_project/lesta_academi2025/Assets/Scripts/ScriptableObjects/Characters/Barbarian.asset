@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Barbarian
   m_EditorClassIdentifier: Assembly-CSharp::Characters
   character: 2
+  weapon: {fileID: 11400000, guid: 3a8c062e7959fbd449dce5438f3ba6fc, type: 2}
   HpPerLevel: 6
   level: 0
   abilities:
